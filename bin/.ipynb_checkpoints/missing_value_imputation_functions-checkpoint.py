@@ -134,27 +134,28 @@ def python_MICE_imputer(X, estimator):
 inputs :
     - X : peakTable with only variable columns, no metadata
     - n_neighbors (default=5) : number of neighbors to impute each feature
-    - by (default='features') : allows to choose axis along which perform the imputation
+    - by (default='columns') : allows to choose axis along which perform the imputation
 '''
-def KNN_imputer(X, n_neighbors=5, by='features'):
+def KNN_imputer(X, n_neighbors=5, by='columns'):
     
     import pandas as pd
     from sklearn.impute import KNNImputer
     
-    imp = KNNImputer(n_neighbors=n_neighbors, weights="uniform")
+    imp = KNNImputer(n_neighbors=n_neighbors, weights='uniform')
     
-    if by=='samples':
+    if by=='rows':
 
         imp.fit(X)
 
         X_imp_KNN = pd.DataFrame(imp.transform(X), columns=X.columns)
         return X_imp_KNN
     
-    elif by=='features':
+    elif by=='columns':
         
         imp.fit(X.transpose())
 
-        X_imp_KNN = pd.DataFrame(imp.transform(X.transpose()), columns=X.transpose().columns).transpose()
+        X_imp_KNN = pd.DataFrame(imp.transform(X.transpose())).transpose()
+        X_imp_KNN.columns = X.columns
         return X_imp_KNN
     
     else:
